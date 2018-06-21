@@ -6,13 +6,13 @@
 
 <div metal:define-macro="portlet"
      tal:define="member python: context.portal_membership.getAuthenticatedMember()"
-     tal:condition="python:'LabClerk' in member.getRoles()">
+     tal:condition="python:member.has_role(('LabClerk', 'LabManager'))">
 <tal:orders
      tal:define="portal context/portal_url/getPortalObject;
                  plone_view context/@@plone;
                  DateTime python:modules['DateTime'].DateTime;
                  rs python:here.portal_catalog(
-                    portal_type='Order',
+                    portal_type='SupplyOrder',
                     review_state='pending');
                  results python:[p.getObject() for p in rs[:5]];"
      tal:condition="results">
