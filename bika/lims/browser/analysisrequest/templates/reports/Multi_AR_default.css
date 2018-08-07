@@ -105,6 +105,13 @@
     margin-top:7px;
 }
 
+.result{
+    text-align:center;
+}
+.th_unit{
+    text-align: center;
+}
+
 .ar_table .unit,
 .ar_table .unit sub,
 .ar_table .unit sup {
@@ -112,6 +119,7 @@
     font-weight:normal;
     font-style:italic;
     font-size:7pt;
+    text-align: center;
 }
 
 div.resultsinterpretation {

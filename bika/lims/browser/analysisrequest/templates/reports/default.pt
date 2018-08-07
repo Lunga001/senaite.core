@@ -447,14 +447,7 @@
   </div>
   <!-- Discreeter section -->
   <div id="section-discreeter">
-    <div id="discreeter-outofrange" i18n:translate="">* Result out of client specified range.</div>
-    <div tal:condition="analysisrequest/invoice_exclude" i18n:translate="">Not invoiced</div>
-    <div tal:condition="laboratory/accredited" i18n:translate="">Methods included in the <tal:block replace="laboratory/accreditation_body" i18n:name="accreditation_body"/> schedule of Accreditation for this Laboratory. Analysis remarks are not accredited</div>
-    <div i18n:translate="">Analysis results relate only to the samples tested.</div>
-    <div i18n:translate="">This document shall not be reproduced except in full, without the written approval of <tal:block replace="laboratory/title" i18n:name="name_lab"/></div>
-    <div tal:define="confidence_level laboratory/confidence"
-         tal:condition="confidence_level" i18n:translate="">Test results are at a <tal:block replace="confidence_level" i18n:name="lab_confidence"/>% confidence level</div>
-    <div tal:condition="python:contact.get('pubpref','') != '' and 'email' in contact['pubpref']" i18n:translate="">Methods of analysis available by clicking on the 'Request' link</div>
+      <div class="footer" tal:content="structure analysisrequest/footer"></div>
   </div>
 
   <!--
@@ -471,7 +464,6 @@
     <table>
       <tr>
         <td class='footer-discreeter'>
-          <div class="footer" tal:content="structure analysisrequest/footer"></div>
           <div class="page-number">Page <span class="page-current-num"></span> of <span class="page-total-count"></span></div>
         </td>
         <td class='barcode-container'>
