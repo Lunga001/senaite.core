@@ -35,7 +35,9 @@
           <table>
             <tr>
               <th i18n:translate="" class="label">Client</th>
-              <td tal:content="python:client.Title()"/>
+              <td><a tal:attributes="href python:analysisrequest['client']['url']"
+                   tal:content="python:client.Title()"/>
+              </td>
             </tr>
             <tr>
               <th i18n:translate="" class="label">Contact</th>
@@ -45,7 +47,7 @@
               <th i18n:translate="" class="label">Email</th>
               <td id="client-email">
                 <a tal:content="python:contact.getEmailAddress()"
-                   tal:attributes="url python:'mailto:%s' % contact.getEmailAddress()"/>
+                   tal:attributes="href python:'mailto:%s' % contact.getEmailAddress()"/>
               </td>
             </tr>
             <tr>
@@ -65,14 +67,14 @@
               <th i18n:translate="" class="label">
                 Laboratory
               </th>
-              <td tal:content="python: lab.Title()"/>
+              <td><a tal:attributes="href python: lab.getLabURL()" tal:content="python: lab.Title()"/></td>
             </tr>
             <tr>
               <th i18n:translate="" class="label">Email
               </th>
               <td>
                 <a tal:content="python:lab.getEmailAddress()"
-                   tal:attributes="url python:'mailto:%s' % lab.getEmailAddress()"/>
+                   tal:attributes="href python:'mailto:%s' % lab.getEmailAddress()"/>
               </td>
             </tr>
             <tr>
