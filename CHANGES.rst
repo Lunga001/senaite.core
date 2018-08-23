@@ -7,6 +7,7 @@ Changelog
 **Added**
 
 - #1003 Alphanumeric numbering in sequential IDs generator
+- #1001 Option to show Interim fields on COA
 
 **Changed**
 
