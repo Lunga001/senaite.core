@@ -1,6 +1,29 @@
 Changelog
 =========
 
+1.2.9 (unreleased)
+------------------
+
+**Added**
+
+- #1001 Option to show Interim fields on COA
+
+**Changed**
+
+
+**Removed**
+
+
+**Fixed**
+
+- #996 Hide checkbox labels on category expansion
+- #990 Fix client analysisspecs view
+
+
+**Security**
+
+
+
 1.2.8 (2018-08-11)
 ------------------
 
