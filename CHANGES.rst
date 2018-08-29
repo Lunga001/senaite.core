@@ -6,6 +6,36 @@ Changelog
 
 **Added**
 
+- #1003 Alphanumeric numbering in sequential IDs generator
+
+**Changed**
+
+
+**Removed**
+
+- #1005 Removed databasesanitize package
+- #992 Removed "Attach" report option for Attachments
+
+
+**Fixed**
+
+- #1008 Previous Results on COA
+- #991 New client contacts do not have access to their own AR Templates
+- #996 Hide checkbox labels on category expansion
+- #990 Fix client analysisspecs view
+- #899 Secondary AR changes received date of sample
+
+
+**Security**
+
+
+
+1.2.8 (2018-08-11)
+------------------
+
+**Added**
+
+- #965 Added operators for max and min values in Specifications
 - #947 Instrument import interface: Cobas Integra 400plus
 - #924 Added ExtProxyField for its use in SchemaExtender
 
