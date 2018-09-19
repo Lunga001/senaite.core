@@ -199,3 +199,9 @@
     padding: 5px 0;
     width: 100%;
 }
+.new_line{
+    display: block
+}
+.interims_title{
+    padding-left: 10px
+}

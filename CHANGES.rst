@@ -6,6 +6,8 @@ Changelog
 
 **Added**
 
+- #1001 Option to show Interim fields on COA
+- #1024 Function to get the Verifiers from an Analysis Request
 - #1019 Support for min and max warns in range charts
 - #1003 Alphanumeric numbering in sequential IDs generator
 - #1001 Option to show Interim fields on COA
@@ -24,6 +26,7 @@ Changelog
 
 **Fixed**
 
+- #1022 Date Received saved as UTC time
 - #1018 Fix AR Add cleanup after template removal
 - #1014 ReferenceWidget does not handle searches with null/None
 - #1008 Previous results from same batch are always displayed in reports
