@@ -9,7 +9,7 @@ from Products.CMFCore.utils import getToolByName
 from Products.CMFCore.WorkflowCore import WorkflowException
 
 from bika.lims import logger
-from bika.lims.workflow import isBasicTransitionAllowed
+from bika.lims.workflow import isBasicTransitionAllowed, getCurrentState
 
 
 def schedule_sampling(obj):
@@ -27,4 +27,11 @@ def schedule_sampling(obj):
 
 
 def receive(obj):
-    return isBasicTransitionAllowed(obj)
+    if not isBasicTransitionAllowed(obj):
+        return False
+
+    if getCurrentState(obj) == 'sample_registered':
+        if obj.getSamplingWorkflowEnabled():
+            return False
+        return obj.bika_setup.getAutoReceiveSamples()
+    return True

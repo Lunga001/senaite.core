@@ -26,7 +26,7 @@ from bika.lims.utils import tmpID, copy_field_values
 from bika.lims.utils import to_utf8
 from bika.lims.utils.sample import create_sample
 from bika.lims.utils.samplepartition import create_samplepartition
-from bika.lims.workflow import doActionFor
+from bika.lims.workflow import doActionFor, isTransitionAllowed
 from bika.lims.workflow import doActionsFor
 from bika.lims.workflow import getReviewHistoryActionsList
 from email.Utils import formataddr
@@ -125,10 +125,11 @@ def create_analysisrequest(client, request, values, analyses=None,
     # each object we created). After and Before transitions will take care of
     # cascading and promoting the transitions in all the objects "associated"
     # to this Analysis Request.
-    sampling_workflow_enabled = sample.getSamplingWorkflowEnabled()
     action = 'no_sampling_workflow'
-    if sampling_workflow_enabled:
+    if sample.getSamplingWorkflowEnabled():
         action = 'sampling_workflow'
+    elif isTransitionAllowed(ar, 'receive'):
+        action = 'receive'
     # Transition the Analysis Request and related objects to "sampled" (if
     # sampling workflow not enabled) or to "to_be_sampled" statuses.
     doActionFor(ar, action)
