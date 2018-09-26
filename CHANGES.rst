@@ -1,7 +1,50 @@
 Changelog
 =========
 
-1.2.8 (unreleased)
+1.2.9 (unreleased)
+------------------
+
+**Added**
+
+- #1031 Added profiling and timing decorators
+- #1001 Option to show Interim fields on results reports
+- #1024 Function to get the Verifiers from an Analysis Request
+- #1019 Support for min and max warns in range charts
+- #1003 Alphanumeric numbering in sequential IDs generator
+
+**Changed**
+
+- #1027 Refactored relationship between invalidated ARs and retests
+- #1027 Rename `retract_ar` transition to `invalidate`
+- #1012 Refactored Contacts listing
+- #1010 Increased max length of Results options to 255 chars (was 40)
+
+**Removed**
+
+- #1026 Removed auto-digest of results reports on verify transitions
+- #1005 Removed databasesanitize package
+- #992 Removed "Attach" report option for Attachments
+
+
+**Fixed**
+
+- #1022 Date Received saved as UTC time
+- #1018 Fix AR Add cleanup after template removal
+- #1014 ReferenceWidget does not handle searches with null/None
+- #1008 Previous results from same batch are always displayed in reports
+- #1013 ARs and Samples from other clients are listed when logged in as contact
+- #991 New client contacts do not have access to their own AR Templates
+- #996 Hide checkbox labels on category expansion
+- #990 Fix client analysisspecs view
+- #899 Secondary AR changes received date of sample
+- #888 Order of Interim Fields not maintained on ARs
+
+
+**Security**
+
+
+
+1.2.8 (2018-08-11)
 ------------------
 
 **Added**
@@ -43,6 +86,9 @@ Changelog
 
 **Fixed**
 
+- #983 Traceback in Client's Analysis Specs view
+- #986 Result input fields are not read-only for analyst after submission
+- #985 Do not display content actions in listings from inside Client
 - #966 Traceback in Analyses listings when analysis unit is a numeric value
 - #959 Time not displayed for Date Created in Analysis Requests listings
 - #949 Retain AR Spec if Analyses were added/removed
@@ -51,7 +97,7 @@ Changelog
 - #917 Localization of date and time strings in listings
 - #902 Attribute error when updating QC results using an import interface
 - #456 Date Published appears two times on the header table of AR view
-- #898 Cannot view/edit Supplier.  Tabs for different views now visible.
+- #898 Cannot view/edit Supplier. Tabs for different views now visible.
 - #905 Users created through LabContact's Login Details view are added to "Clients" group
 - #906 DateTime Widget does not display the Time
 - #909 List of clients cannot sort by Client ID
@@ -61,9 +107,7 @@ Changelog
 - #960 Traceback on AnalysisSpec Log
 - #962 Calculated results not marked for submission if zero
 - #964 Dormant Analysis Services displayed in AR Templates
-- #967 Avoid deepcopy, "Can't pickle acquisition wrappers".
-
-**Security**
+- #967 Avoid deepcopy, "Can't pickle acquisition wrappers"
 
 
 1.2.7 (2018-07-10)

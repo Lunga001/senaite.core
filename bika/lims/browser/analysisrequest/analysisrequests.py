@@ -8,35 +8,32 @@
 import collections
 import json
 import traceback
-from DateTime import DateTime
 
-from bika.lims import bikaMessageFactory as _
+from DateTime import DateTime
+from Products.Archetypes import PloneMessageFactory as PMF
+from Products.CMFCore.permissions import ModifyPortalContent
+from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from bika.lims import api
+from bika.lims import bikaMessageFactory as _
 from bika.lims import logger
 from bika.lims.browser.analysisrequest.analysisrequests_filter_bar import \
     AnalysisRequestsBikaListingFilterBar
 from bika.lims.browser.bika_listing import BikaListingView
 from bika.lims.catalog import CATALOG_ANALYSIS_REQUEST_LISTING
 from bika.lims.config import PRIORITIES
-from bika.lims.permissions import Verify as VerifyPermission
 from bika.lims.permissions import (AddAnalysisRequest, ManageAnalysisRequests,
                                    SampleSample)
+from bika.lims.permissions import Verify as VerifyPermission
 from bika.lims.utils import getUsers, t
 from collective.taskqueue.interfaces import ITaskQueue
 from plone.api import user
-from plone.app.layout.globals.interfaces import IViewView
 from plone.protect import CheckAuthenticator, PostOnly
-from Products.Archetypes import PloneMessageFactory as PMF
-from Products.CMFCore.permissions import ModifyPortalContent
-from Products.Five.browser.pagetemplatefile import ViewPageTemplateFile
 from zope.component import queryUtility
-from zope.interface import implements
 
 
 class AnalysisRequestsView(BikaListingView):
     """Listing View for all Analysis Requests in the System
     """
-    implements(IViewView)
 
     template = ViewPageTemplateFile("templates/analysisrequests.pt")
     ar_add = ViewPageTemplateFile("templates/ar_add.pt")
@@ -620,6 +617,20 @@ class AnalysisRequestsView(BikaListingView):
                         state["hide_transitions"] = ["preserve", ]
             new_states.append(state)
         self.review_states = new_states
+
+    def before_render(self):
+        """Before template render hook
+        """
+        # If the current user is a client contact, display those analysis
+        # requests that belong to same client only
+        super(AnalysisRequestsView, self).before_render()
+        client = api.get_current_client()
+        if client:
+            self.contentFilter['path'] = {
+                "query": "/".join(client.getPhysicalPath()),
+                "level": 0 }
+            # No need to display the Client column
+            self.remove_column('Client')
 
     def isItemAllowed(self, obj):
         """ If Adnvanced Filter bar is enabled, this method checks if the item

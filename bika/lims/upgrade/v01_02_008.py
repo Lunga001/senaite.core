@@ -120,12 +120,8 @@ def revert_client_permissions_for_batches(portal):
     batch_wf.states.closed.setPermission("View", acquire, grant)
 
     catalog = api.get_tool('portal_catalog')
-    brains = catalog(portal_type='Batch')
+    brains = catalog(portal_type='Batch', allowedRolesAndUsers=["Client"])
     for brain in brains:
-        allowed = brain.allowedRolesAndUsers or []
-        if 'Client' not in allowed:
-            # No need to do rolemapping + reindex if not necessary
-            continue
         obj = api.get_object(brain)
         batch_wf.updateRoleMappingsFor(obj)
         obj.reindexObject(idxs=['allowedRolesAndUsers'])
@@ -216,9 +212,10 @@ def fix_items_stuck_in_sample_prep_states(portal, ut):
             changeWorkflowState(instance, wfid, state_id)
             # fire transition handler for the action that originally was fired.
             old_sdef = new_sdef = wf.states[state_id]
-            tdef = wf.transitions[action_id]
-            notify(AfterTransitionEvent(
-                instance, wf, old_sdef, new_sdef, tdef, event, {}))
+            if action_id is not None:
+                tdef = wf.transitions[action_id]
+                notify(AfterTransitionEvent(
+                    instance, wf, old_sdef, new_sdef, tdef, event, {}))
             # check AR state matches the analyses
             if IAnalysisRequest.providedBy(instance):
                 fix_ar_sample_workflow(instance)
