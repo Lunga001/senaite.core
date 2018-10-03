@@ -15,6 +15,8 @@ Changelog
 **Changed**
 
 - #1017 Instrument Results imports of analysis that have interim fields with apply wide must stay received
+- #764 Code cleanup and redux of 2-Dimensional-CSV instrument interface
+- #1032 Refactored and fixed inconsistencies with Analysis TAT logic
 - #1027 Refactored relationship between invalidated ARs and retests
 - #1027 Rename `retract_ar` transition to `invalidate`
 - #1012 Refactored Contacts listing
@@ -29,6 +31,13 @@ Changelog
 
 **Fixed**
 
+- #1037 Display supplier view instead of reference samples per default
+- #1030 Earliness of analysis is not expressed as minutes
+- #1029 TAT in Analysis TAT over time report does not display days
+- #1029 TAT in Analysis TAT over time report with decimals
+- #1029 Need to always choose an analyst in productivity reports
+- #1034 Attachments assigned to Analyses break and get orphaned when the referenced Analysis was removed
+- #1028 Numbers for productivity report "Analyses by client" are all zero
 - #1022 Date Received saved as UTC time
 - #1018 Fix AR Add cleanup after template removal
 - #1014 ReferenceWidget does not handle searches with null/None

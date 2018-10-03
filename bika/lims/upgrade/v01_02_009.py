@@ -10,6 +10,7 @@ import time
 import transaction
 from bika.lims import api
 from bika.lims import logger
+from bika.lims.catalog.analysis_catalog import CATALOG_ANALYSIS_LISTING
 from bika.lims.config import PROJECTNAME as product
 from bika.lims.upgrade import upgradestep
 from bika.lims.upgrade.utils import UpgradeUtils
@@ -36,6 +37,14 @@ def upgrade(tool):
     setup.runImportStepFromProfile(profile, 'workflow')
 
     # -------- ADD YOUR STUFF HERE --------
+
+    setup.runImportStepFromProfile(profile, 'typeinfo')
+
+    # Delete orphaned Attachments
+    # https://github.com/senaite/senaite.core/issues/1025
+    delete_orphaned_attachments(portal)
+
+    # Migrate report option from attach (a) -> ignore (i)
     migrate_attachment_report_options(portal)
 
     # Reindex object security for client contents (see #991)
@@ -47,8 +56,31 @@ def upgrade(tool):
     # Rebind ARs that were generated because of the invalidation of other ARs
     rebind_invalidated_ars(portal)
 
+    # Reindex Turnaround time and due date related fields
+    recatalog_analyses_due_date(portal)
+
     logger.info("{0} upgraded to version {1}".format(product, version))
     return True
+
+
+def delete_orphaned_attachments(portal):
+    """Delete attachments where the Analysis was removed
+       https://github.com/senaite/senaite.core/issues/1025
+    """
+    attachments = api.search({"portal_type": "Attachment"})
+    total = len(attachments)
+    logger.info("Integrity checking %d attachments" % total)
+    for num, attachment in enumerate(attachments):
+        obj = api.get_object(attachment)
+        # The method `getRequest` from the attachment tries to get the AR
+        # either directly or from one of the linked Analyses. If it returns
+        # `None`, we can be sure that the attachment is neither assigned
+        # directly to an AR nor to an Analysis.
+        ar = obj.getRequest()
+        if ar is None:
+            obj_id = api.get_id(obj)
+            api.get_parent(obj).manage_delObjects(obj_id)
+            logger.info("Deleted orphaned Attachment {}".format(obj_id))
 
 
 def reindex_client_local_owner_permissions(portal):
@@ -161,3 +193,26 @@ def rebind_invalidated_ars(portal):
         folder.manage_delObjects([rel_id])
 
     logger.info("Rebound {} invalidated ARs".format(num))
+
+
+def recatalog_analyses_due_date(portal):
+    """Recatalog the index and metadata field 'getDueDate'
+    """
+    logger.info("Updating Analyses getDueDate")
+    # No need to update those analyses that are verified or published. Only
+    # those that are under work
+    catalog = api.get_tool(CATALOG_ANALYSIS_LISTING)
+    review_states = ["retracted", "sample_due", "attachment_due",
+                     "sample_received", "to_be_verified"]
+    query = dict(portal_type="Analysis", review_state=review_states)
+    analyses = api.search(query, CATALOG_ANALYSIS_LISTING)
+    total = len(analyses)
+    num = 0
+    for num, analysis in enumerate(analyses, start=1):
+        analysis = api.get_object(analysis)
+        catalog.catalog_object(analysis, idxs=['getDueDate'])
+        if num % 100 == 0:
+            logger.info("Updating Analysis getDueDate: {0}/{1}"
+                        .format(num, total))
+
+    logger.info("{} Analyses updated".format(num))
