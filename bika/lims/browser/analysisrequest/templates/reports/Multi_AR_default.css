@@ -149,3 +149,9 @@ div.resultsinterpretation_heading {
 .green { background:green; }
 .black { background:black; }
 a {text-decoration: none}
+.new_line{
+    display: block
+}
+.interims_title{
+    padding-left: 10px
+}

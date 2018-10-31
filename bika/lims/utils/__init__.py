@@ -5,6 +5,7 @@
 # Copyright 2018 by it's authors.
 # Some rights reserved. See LICENSE.rst, CONTRIBUTORS.rst.
 
+import mimetypes
 import os
 import re
 import tempfile
@@ -13,14 +14,12 @@ import urllib2
 from email import Encoders
 from time import time
 
-import mimetypes
-
 from AccessControl import ModuleSecurityInfo
 from AccessControl import allow_module
 from AccessControl import getSecurityManager
 from DateTime import DateTime
-from Products.Archetypes.public import DisplayList
 from Products.Archetypes.interfaces.field import IComputedField
+from Products.Archetypes.public import DisplayList
 from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.utils import safe_unicode
 from bika.lims import api
@@ -62,7 +61,9 @@ def t(i18n_msg):
     """
     text = to_unicode(i18n_msg)
     try:
-        text = translate(text)
+        request = api.get_request()
+        domain = getattr(i18n_msg, "domain", "senaite.core")
+        text = translate(text, domain=domain, context=request)
     except UnicodeDecodeError:
         # TODO: This is only a quick fix
         logger.warn("{} couldn't be translated".format(text))
@@ -184,25 +185,6 @@ def formatDateParms(context, date_id):
         date_parms = 'to %s' % (to_date)
 
     return date_parms
-
-
-def formatDuration(context, totminutes):
-    """ Format a time period in a usable manner: eg. 3h24m
-    """
-    mins = totminutes % 60
-    hours = (totminutes - mins) / 60
-
-    if mins:
-        mins_str = '%sm' % mins
-    else:
-        mins_str = ''
-
-    if hours:
-        hours_str = '%sh' % hours
-    else:
-        hours_str = ''
-
-    return '%s%s' % (hours_str, mins_str)
 
 
 def formatDecimalMark(value, decimalmark='.'):
@@ -931,3 +913,16 @@ def get_display_list(brains_or_objects=None, none_item=False):
         items.insert(0, ('', t('Select...')))
 
     return DisplayList(items)
+
+
+def to_choices(display_list):
+    """Converts a display list to a choices list
+    """
+    if not display_list:
+        return []
+
+    return map(
+        lambda item: {
+            "ResultValue": item[0],
+            "ResultText": item[1]},
+        display_list.items())

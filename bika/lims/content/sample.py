@@ -21,7 +21,7 @@ from bika.lims.browser.widgets import RejectionWidget
 from bika.lims.browser.widgets import RemarksWidget
 from bika.lims.config import PROJECTNAME
 from bika.lims.content.bikaschema import BikaSchema
-from bika.lims.interfaces import ISample, ISamplePrepWorkflow
+from bika.lims.interfaces import ISample
 from bika.lims.permissions import SampleSample
 from bika.lims.permissions import ScheduleSampling
 from bika.lims.workflow import doActionFor
@@ -109,19 +109,6 @@ schema = BikaSchema.copy() + Schema((
                      'rejected':          {'view': 'visible', 'edit': 'invisible'},
                      },
             render_own_label=True,
-        ),
-    ),
-    ReferenceField('LinkedSample',
-        vocabulary_display_path_bound=sys.maxsize,
-        multiValue=1,
-        allowed_types=('Sample',),
-        relationship='SampleSample',
-        referenceClass=HoldingReference,
-        mode="rw",
-        read_permission=permissions.View,
-        write_permission=permissions.ModifyPortalContent,
-        widget=ReferenceWidget(
-            label=_("Linked Sample"),
         ),
     ),
     ReferenceField('SampleType',
@@ -333,31 +320,6 @@ schema = BikaSchema.copy() + Schema((
             render_own_label=True,
         ),
     ),
-    StringField('PreparationWorkflow',
-        mode="rw",
-        read_permission=permissions.View,
-        write_permission=permissions.ModifyPortalContent,
-        vocabulary='getPreparationWorkflows',
-        acquire=True,
-        widget=SelectionWidget(
-            format="select",
-            label=_("Preparation Workflow"),
-            visible={'edit': 'visible',
-                     'view': 'visible',
-                     'header_table': 'visible',
-                     'sample_registered': {'view': 'visible', 'edit': 'visible'},
-                     'to_be_sampled':     {'view': 'visible', 'edit': 'invisible'},
-                     'sampled':           {'view': 'visible', 'edit': 'invisible'},
-                     'to_be_preserved':   {'view': 'visible', 'edit': 'invisible'},
-                     'sample_due':        {'view': 'visible', 'edit': 'invisible'},
-                     'sample_received':   {'view': 'visible', 'edit': 'invisible'},
-                     'expired':           {'view': 'visible', 'edit': 'invisible'},
-                     'disposed':          {'view': 'visible', 'edit': 'invisible'},
-                     'rejected':          {'view': 'visible', 'edit': 'invisible'},
-                     },
-            render_own_label=True,
-        ),
-    ),
     ReferenceField('SamplingDeviation',
         vocabulary_display_path_bound = sys.maxsize,
         allowed_types = ('SamplingDeviation',),
@@ -458,16 +420,18 @@ schema = BikaSchema.copy() + Schema((
         write_permission=permissions.ModifyPortalContent,
         widget = DateTimeWidget(
             label=_("Date Received"),
+            show_time=True,
+            datepicker_nofuture=1,
             visible={'edit': 'visible',
                      'view': 'visible',
                      'header_table': 'visible',
-                     'sample_registered': {'view': 'invisible', 'edit': 'invisible'},
-                     'to_be_sampled':     {'view': 'invisible', 'edit': 'invisible'},
-                     'scheduled_sampling': {'view': 'visible', 'edit': 'visible'},
-                     'sampled':           {'view': 'invisible', 'edit': 'invisible'},
-                     'to_be_preserved':   {'view': 'invisible', 'edit': 'invisible'},
-                     'sample_due':        {'view': 'invisible', 'edit': 'invisible'},
-                     'sample_received':   {'view': 'visible', 'edit': 'invisible'},
+                     'sample_registered': {'view': 'visible', 'edit': 'invisible'},
+                     'to_be_sampled':     {'view': 'visible', 'edit': 'invisible'},
+                     'scheduled_sampling': {'view': 'visible', 'edit': 'invisible'},
+                     'sampled':           {'view': 'visible', 'edit': 'invisible'},
+                     'to_be_preserved':   {'view': 'visible', 'edit': 'invisible'},
+                     'sample_due':        {'view': 'visible', 'edit': 'invisible'},
+                     'sample_received':   {'view': 'visible', 'edit': 'visible'},
                      'expired':           {'view': 'visible', 'edit': 'invisible'},
                      'disposed':          {'view': 'visible', 'edit': 'invisible'},
                      'rejected':          {'view': 'visible', 'edit': 'invisible'},
@@ -647,7 +611,7 @@ schema['title'].required = False
 
 
 class Sample(BaseFolder, HistoryAwareMixin):
-    implements(ISample, ISamplePrepWorkflow)
+    implements(ISample)
     security = ClassSecurityInfo()
     displayContentsTab = False
     schema = schema
@@ -791,12 +755,17 @@ class Sample(BaseFolder, HistoryAwareMixin):
 
     security.declarePublic('getAnalyses')
 
-    def getAnalyses(self, contentFilter):
+    def getAnalyses(self, contentFilter=None, **kwargs):
         """ return list of all analyses against this sample
         """
+        # contentFilter and kwargs are combined.  They both exist for
+        # compatibility between the two signatures; kwargs has been added
+        # to be compatible with how getAnalyses() is used everywhere else.
+        cf = contentFilter if contentFilter else {}
+        cf.update(kwargs)
         analyses = []
         for ar in self.getAnalysisRequests():
-            analyses += ar.getAnalyses(**contentFilter)
+            analyses.extend(ar.getAnalyses(**cf))
         return analyses
 
     def getSamplers(self):
@@ -833,19 +802,6 @@ class Sample(BaseFolder, HistoryAwareMixin):
         """
         workflow = getToolByName(self, 'portal_workflow')
         return workflow.getInfoFor(self, 'review_state')
-
-    def getPreparationWorkflows(self):
-        """Return a list of sample preparation workflows.  These are identified
-        by scanning all workflow IDs for those beginning with "sampleprep".
-        """
-        wf = self.portal_workflow
-        ids = wf.getWorkflowIds()
-        sampleprep_ids = [wid for wid in ids if wid.startswith('sampleprep')]
-        prep_workflows = [['', ''],]
-        for workflow_id in sampleprep_ids:
-            workflow = wf.getWorkflowById(workflow_id)
-            prep_workflows.append([workflow_id, workflow.title])
-        return DisplayList(prep_workflows)
 
     def getSamplePartitions(self):
         """Returns the Sample Partitions associated to this Sample
@@ -924,14 +880,6 @@ class Sample(BaseFolder, HistoryAwareMixin):
     @security.public
     def guard_receive_transition(self):
         return guards.receive(self)
-
-    @security.public
-    def guard_sample_prep_transition(self):
-        return guards.sample_prep(self)
-
-    @security.public
-    def guard_sample_prep_complete_transition(self):
-        return guards.sample_prep_complete(self)
 
     @security.public
     def guard_schedule_sampling_transition(self):

@@ -31,10 +31,10 @@ from bika.lims.browser.widgets import SelectionWidget as BikaSelectionWidget
 from bika.lims.catalog import CATALOG_ANALYSIS_LISTING
 from bika.lims.config import PRIORITIES
 from bika.lims.config import PROJECTNAME
+from bika.lims.content.analysisspec import ResultsRangeDict
 from bika.lims.content.bikaschema import BikaSchema
 # Bika Interfaces
 from bika.lims.interfaces import IAnalysisRequest
-from bika.lims.interfaces import ISamplePrepWorkflow
 # Bika Permissions
 from bika.lims.permissions import EditARContact
 from bika.lims.permissions import ManageInvoices
@@ -114,7 +114,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -163,7 +162,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -287,7 +285,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -327,7 +324,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -367,7 +363,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -405,7 +400,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -457,7 +451,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -520,7 +513,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -560,7 +552,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -597,7 +588,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -673,7 +663,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -712,7 +701,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'visible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -781,7 +769,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -813,7 +800,7 @@ schema = BikaSchema.copy() + Schema((
         required=0,
         type='resultsrange',
         subfields=('keyword', 'min', 'max', 'warn_min', 'warn_max', 'hidemin',
-                   'hidemax', 'rangecomment'),
+                   'hidemax', 'rangecomment', 'min_operator', 'max_operator'),
         widget=ComputedWidget(visible=False),
     ),
 
@@ -843,7 +830,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'invisible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'invisible', 'edit': 'invisible'},
                 'sample_due': {'view': 'invisible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'invisible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'invisible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'invisible', 'edit': 'invisible'},
@@ -886,7 +872,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -928,7 +913,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -965,7 +949,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -1002,7 +985,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -1038,7 +1020,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -1079,7 +1060,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -1122,7 +1102,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -1159,7 +1138,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -1230,7 +1208,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -1271,7 +1248,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'invisible'},
                 'sample_due': {'view': 'visible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -1307,7 +1283,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'visible'},
                 'attachment_due': {'view': 'visible', 'edit': 'visible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'visible'},
@@ -1341,7 +1316,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'visible', 'edit': 'visible'},
                 'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
                 'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'visible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'visible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
@@ -1420,41 +1394,22 @@ schema = BikaSchema.copy() + Schema((
             },
         )
     ),
-    # Another way to obtain a transition date is using getTransitionDate
-    # function. We are using a DateTimeField/Widget here because in some
-    # cases the user may want to change the Received Date.
-    # AnalysisRequest and Sample's DateReceived fields needn't to have
-    # the same value.
-    # This field is updated in workflow_script_receive method.
-    DateTimeField(
+    # This field is a mirror of a field in Sample with the same name
+    ProxyField(
         'DateReceived',
+        proxy="context.getSample()",
         mode="rw",
         read_permission=View,
         write_permission=ModifyPortalContent,
         widget=DateTimeWidget(
-            label=_("Date Received"),
+            label=_("Date Sample Received"),
+            show_time=True,
             description=_("The date when the sample was received"),
             render_own_label=True,
             visible={
-                'edit': 'visible',
+                'edit': 'invisible',
                 'view': 'visible',
                 'header_table': 'visible',
-                'sample_registered': {
-                    'view': 'invisible', 'edit': 'invisible'},
-                'to_be_sampled': {'view': 'invisible', 'edit': 'invisible'},
-                'scheduled_sampling': {
-                    'view': 'invisible', 'edit': 'invisible'},
-                'sampled': {'view': 'invisible', 'edit': 'invisible'},
-                'to_be_preserved': {'view': 'invisible', 'edit': 'invisible'},
-                'sample_due': {'view': 'invisible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
-                'sample_received': {'view': 'visible', 'edit': 'invisible'},
-                'attachment_due': {'view': 'visible', 'edit': 'invisible'},
-                'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
-                'verified': {'view': 'visible', 'edit': 'invisible'},
-                'published': {'view': 'visible', 'edit': 'invisible'},
-                'invalid': {'view': 'visible', 'edit': 'invisible'},
-                'rejected': {'view': 'visible', 'edit': 'invisible'},
             },
         ),
     ),
@@ -1479,7 +1434,6 @@ schema = BikaSchema.copy() + Schema((
                 'sampled': {'view': 'invisible', 'edit': 'invisible'},
                 'to_be_preserved': {'view': 'invisible', 'edit': 'invisible'},
                 'sample_due': {'view': 'invisible', 'edit': 'invisible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
                 'sample_received': {'view': 'invisible', 'edit': 'invisible'},
                 'attachment_due': {'view': 'invisible', 'edit': 'invisible'},
                 'to_be_verified': {'view': 'invisible', 'edit': 'invisible'},
@@ -1728,18 +1682,6 @@ schema = BikaSchema.copy() + Schema((
         expression="here.getTemplate().Title() if here.getTemplate() else ''",
         widget=ComputedWidget(visible=False),
     ),
-    ReferenceField(
-        'ChildAnalysisRequest',
-        allowed_types=('AnalysisRequest',),
-        relationship='AnalysisRequestChildAnalysisRequest',
-        referenceClass=HoldingReference,
-        mode="rw",
-        read_permission=View,
-        write_permission=ModifyPortalContent,
-        widget=ReferenceWidget(
-            visible=False,
-        ),
-    ),
 
     ReferenceField(
         'ParentAnalysisRequest',
@@ -1754,40 +1696,28 @@ schema = BikaSchema.copy() + Schema((
         ),
     ),
 
-    StringField(
-        'PreparationWorkflow',
+    # The Analysis Request the current Analysis Request comes from because of
+    # an invalidation of the former
+    ReferenceField(
+        'Invalidated',
+        allowed_types=('AnalysisRequest',),
+        relationship='AnalysisRequestRetracted',
+        referenceClass=HoldingReference,
         mode="rw",
         read_permission=View,
         write_permission=ModifyPortalContent,
-        vocabulary='getPreparationWorkflows',
-        acquire=True,
-        widget=BikaSelectionWidget(
-            format="select",
-            label=_("Preparation Workflow"),
-            visible={
-                'edit': 'visible',
-                'view': 'visible',
-                'add': 'edit',
-                'header_table': 'visible',
-                'sample_registered': {
-                    'view': 'visible', 'edit': 'visible', 'add': 'edit'},
-                'to_be_sampled': {'view': 'visible', 'edit': 'visible'},
-                'sampled': {'view': 'visible', 'edit': 'visible'},
-                'to_be_preserved': {'view': 'visible', 'edit': 'visible'},
-                'sample_due': {'view': 'visible', 'edit': 'visible'},
-                'sample_prep': {'view': 'visible', 'edit': 'invisible'},
-                'sample_received': {'view': 'visible', 'edit': 'invisible'},
-                'attachment_due': {'view': 'visible', 'edit': 'invisible'},
-                'to_be_verified': {'view': 'visible', 'edit': 'invisible'},
-                'verified': {'view': 'visible', 'edit': 'invisible'},
-                'published': {'view': 'visible', 'edit': 'invisible'},
-                'invalid': {'view': 'visible', 'edit': 'invisible'},
-                'rejected': {'view': 'visible', 'edit': 'invisible'},
-            },
-            render_own_label=True,
+        widget=ReferenceWidget(
+            visible=False,
         ),
     ),
 
+    # The Analysis Request that was automatically generated due to the
+    # invalidation of the current Analysis Request
+    ComputedField(
+        'Retest',
+        expression="here.get_retest()",
+        widget=ComputedWidget(visible=False)
+    ),
 
     # For comments or results interpretation
     # Old one, to be removed because of the incorporation of
@@ -1841,12 +1771,6 @@ schema = BikaSchema.copy() + Schema((
                      'edit': 'invisible'},
         ),
     ),
-    # Here is stored pre-digested data used during publication.
-    # It is updated when the object is verified or when changes
-    # are made to verified objects.
-    StringField(
-        'Digest'
-    )
 )
 )
 
@@ -1867,7 +1791,7 @@ schema.moveField('ResultsInterpretationDepts', pos='bottom')
 
 
 class AnalysisRequest(BaseFolder):
-    implements(IAnalysisRequest, ISamplePrepWorkflow)
+    implements(IAnalysisRequest)
     security = ClassSecurityInfo()
     displayContentsTab = False
     schema = schema
@@ -2058,31 +1982,19 @@ class AnalysisRequest(BaseFolder):
                 manager_list.append(manager)
         return manager_list
 
+    def getDueDate(self):
+        """Returns the earliest due date of the analyses this Analysis Request
+        contains."""
+        due_dates = map(lambda an: an.getDueDate, self.getAnalyses())
+        return due_dates and min(due_dates) or None
+
     security.declareProtected(View, 'getLate')
 
     def getLate(self):
-        """Return True if any analyses are late
+        """Return True if there is at least one late analysis in this Request
         """
-        workflow = getToolByName(self, 'portal_workflow')
-        review_state = workflow.getInfoFor(self, 'review_state', '')
-        resultdate = 0
-        if review_state in ['to_be_sampled', 'to_be_preserved',
-                            'sample_due', 'published']:
-            return False
-
-        for analysis in self.objectValues('Analysis'):
-            review_state = workflow.getInfoFor(analysis, 'review_state', '')
-            if review_state == 'published':
-                continue
-            # This situation can be met during analysis request creation
-            calculation = analysis.getCalculation()
-            if not calculation or (
-                    calculation and not calculation.getDependentServices()):
-                resultdate = analysis.getResultCaptureDate()
-            duedate = analysis.getDueDate()
-            # noinspection PyCallingNonCallable
-            if (resultdate and resultdate > duedate) \
-                    or (not resultdate and DateTime() > duedate):
+        for analysis in self.getAnalyses(full_objects=True, retracted=False):
+            if analysis.isLateAnalysis():
                 return True
         return False
 
@@ -2414,7 +2326,13 @@ class AnalysisRequest(BaseFolder):
 
     security.declarePublic('getVerifier')
 
+    @deprecated("Use getVerifiers instead")
     def getVerifier(self):
+        """Returns the user that verified the whole Analysis Request. Since the
+        verification is done automatically as soon as all the analyses it
+        contains are verified, this function returns the user that verified the
+        last analysis pending.
+        """
         wtool = getToolByName(self, 'portal_workflow')
         mtool = getToolByName(self, 'portal_membership')
 
@@ -2437,6 +2355,30 @@ class AnalysisRequest(BaseFolder):
             if verifier is None or verifier == '':
                 verifier = actor
         return verifier
+
+    @security.public
+    def getVerifiersIDs(self):
+        """Returns the ids from users that have verified at least one analysis
+        from this Analysis Request
+        """
+        verifiers_ids = list()
+        for brain in self.getAnalyses():
+            verifiers = brain.getVerificators or ""
+            verifiers_ids += verifiers.split(",")
+        return list(set(verifiers_ids))
+
+    @security.public
+    def getVerifiers(self):
+        """Returns the list of lab contacts that have verified at least one
+        analysis from this Analysis Request
+        """
+        contacts = list()
+        for verifier in self.getVerifiersIDs():
+            user = api.get_user(verifier)
+            contact = api.get_user_contact(user, ["LabContact"])
+            if contact:
+                contacts.append(contact)
+        return contacts
 
     security.declarePublic('getContactUIDForUser')
 
@@ -2519,14 +2461,6 @@ class AnalysisRequest(BaseFolder):
         """
         workflow = getToolByName(self, 'portal_workflow')
         return workflow.getInfoFor(self, 'review_state') == 'invalid'
-
-    def getLastChild(self):
-        """return the last child Request due to invalidation
-        """
-        child = self.getChildAnalysisRequest()
-        while child and child.getChildAnalysisRequest():
-            child = child.getChildAnalysisRequest()
-        return child
 
     def getRequestedAnalyses(self):
         """It returns all requested analyses, even if they belong to an
@@ -2611,7 +2545,7 @@ class AnalysisRequest(BaseFolder):
         out_specs = [sp for sp in specs_range if sp['keyword'] not in keywords]
         # Add manually set ranges
         out_specs.extend(an_specs)
-        return out_specs
+        return map(lambda spec: ResultsRangeDict(spec), out_specs)
 
     def getDatePublished(self):
         """
@@ -2665,19 +2599,6 @@ class AnalysisRequest(BaseFolder):
 
     def getSamplers(self):
         return getUsers(self, ['Sampler', ])
-
-    def getPreparationWorkflows(self):
-        """Return a list of sample preparation workflows.  These are identified
-        by scanning all workflow IDs for those beginning with "sampleprep".
-        """
-        wf = self.portal_workflow
-        ids = wf.getWorkflowIds()
-        sampleprep_ids = [wid for wid in ids if wid.startswith('sampleprep')]
-        prep_workflows = [['', ''], ]
-        for workflow_id in sampleprep_ids:
-            workflow = wf.getWorkflowById(workflow_id)
-            prep_workflows.append([workflow_id, workflow.title])
-        return DisplayList(prep_workflows)
 
     def getDepartments(self):
         """Returns a list of the departments assigned to the Analyses
@@ -2998,14 +2919,6 @@ class AnalysisRequest(BaseFolder):
         return guards.receive(self)
 
     @security.public
-    def guard_sample_prep_transition(self):
-        return guards.sample_prep(self)
-
-    @security.public
-    def guard_sample_prep_complete_transition(self):
-        return guards.sample_prep_complete(self)
-
-    @security.public
     def guard_schedule_sampling_transition(self):
         return guards.schedule_sampling(self)
 
@@ -3068,6 +2981,10 @@ class AnalysisRequest(BaseFolder):
     @security.public
     def workflow_script_retract(self):
         events.after_retract(self)
+
+    @security.public
+    def workflow_script_invalidate(self):
+        events.after_invalidate(self)
 
     def SearchableText(self):
         """
@@ -3155,5 +3072,14 @@ class AnalysisRequest(BaseFolder):
                     "It can not hold an own value!")
         return None
 
+    def get_retest(self):
+        """Returns the Analysis Request automatically generated because of the
+        retraction of the current analysis request
+        """
+        relationship = "AnalysisRequestRetracted"
+        retest = self.getBackReferences(relationship=relationship)
+        if retest and len(retest) > 1:
+            logger.warn("More than one retest for {0}".format(self.getId()))
+        return retest and retest[0] or None
 
 registerType(AnalysisRequest, PROJECTNAME)

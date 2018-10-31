@@ -43,7 +43,7 @@
             title="Exclude from invoice"
             i18n:attributes="value"
             tal:attributes="src string:${view/portal_url}/++resource++bika.lims.images/invoice_exclude_big.png"/>
-        <img tal:condition="python:hasattr(context, 'getChildAnalysisRequest') and context.getChildAnalysisRequest()"
+        <img tal:condition="python:context.getRetest()"
             title="Results have been withdrawn"
             i18n:attributes="value"
             tal:attributes="src string:${view/portal_url}/++resource++bika.lims.images/delete_big.png"/>
@@ -65,14 +65,6 @@
 
     <!-- Header Table -->
     <span tal:replace="structure view/header_table"/>
-
-    <div tal:define="cfields python:view.get_custom_fields()"
-         tal:condition="python: cfields">
-        <tal:customfields repeat="cfield python:cfields.keys()">
-            <span tal:replace="structure python:cfields[cfield]['title']"/>&nbsp;
-            <span tal:replace="structure python:cfields[cfield]['value']"/>
-        </tal:customfields>
-    </div>
 
     <!-- Refactored Remarks Widget
          https://github.com/senaite/senaite.core/pull/920 -->

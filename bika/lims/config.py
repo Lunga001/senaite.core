@@ -59,7 +59,6 @@ ATTACHMENT_OPTIONS = DisplayList((
 ))
 ATTACHMENT_REPORT_OPTIONS = DisplayList((
     ('r', _('Render in Report')),
-    ('a', _('Attach to Report')),
     ('i', _('Ignore in Report')),
 ))
 ARIMPORT_OPTIONS = DisplayList((
@@ -128,4 +127,12 @@ PRIORITIES = DisplayList((
     ('3', _('Medium')),
     ('4', _('Low')),
     ('5', _('Lowest')),
+))
+MIN_OPERATORS = DisplayList((
+    ('geq', ">="),
+    ('gt', '>')
+))
+MAX_OPERATORS = DisplayList((
+    ('leq', "<="),
+    ('lt', '<')
 ))
