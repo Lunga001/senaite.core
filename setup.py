@@ -5,7 +5,7 @@
 
 from setuptools import setup, find_packages
 
-version = '1.2.9'
+version = '1.3.0'
 
 setup(
     name='senaite.core',
@@ -53,7 +53,6 @@ setup(
         'jarn.jsi18n',
         'WeasyPrint',
         'collective.progressbar',
-        'z3c.unconfigure==1.0.1',
         'plone.app.dexterity',
         'plone.app.relationfield',
         'plone.app.referenceablebehavior',
@@ -61,7 +60,6 @@ setup(
         'z3c.jbot',
         'plone.resource',
         'CairoSVG==1.0.20',
-        'collective.taskqueue',
         'zopyx.txng3.ext==3.4.0'
     ],
     extras_require={

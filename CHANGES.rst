@@ -1,6 +1,28 @@
 Changelog
 =========
 
+1.3.0 (unreleased)
+------------------
+
+**Added**
+
+
+**Changed**
+
+
+**Removed**
+
+- #1057 Remove z3c.unconfigure dependency
+- #1056 Remove collective.taskqueue dependency
+- #808 Remove old AR Add code
+
+
+**Fixed**
+
+
+**Security**
+
+
 1.2.9 (2018-10-08)
 ------------------
 
