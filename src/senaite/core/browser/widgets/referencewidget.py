@@ -284,10 +284,19 @@ class ReferenceWidget(QuerySelectWidget):
                 field.getName(), uid))
             return {}
 
+        title = False
+        if context.portal_type == "AnalysisRequest":
+            if obj.portal_type == "SampleType":
+                sample = api.search(
+                        {"id": context.id},
+                        catalog="senaite_catalog_sample")[0]
+                sample_type_title = sample.getSampleTypeTitle
+                title = sample_type_title
+
         data = {
             "uid": api.get_uid(obj),
             "url": api.get_url(obj),
-            "Title": api.get_title(obj),
+            "Title": title or api.get_title(obj),
             "Description": api.get_description(obj),
         }
         for name in names:

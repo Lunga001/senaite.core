@@ -514,6 +514,7 @@ schema = BikaSchema.copy() + Schema((
         "SampleType",
         required=1,
         allowed_types=("SampleType",),
+        relationship="AnalysisRequestSampleType",
         mode="rw",
         read_permission=View,
         write_permission=FieldEditSampleType,
